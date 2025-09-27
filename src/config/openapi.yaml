@@ -1,0 +1,207 @@
+openapi: 3.0.3
+info:
+  title: Transaction Ledger API
+  version: 1.0.0
+  description: API for managing accounts, transactions, and reports in the transaction-ledger system.
+
+servers:
+  - url: http://localhost:3000
+
+paths:
+  /accounts:
+    post:
+      summary: Create a new account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/CreateAccountRequest"
+      responses:
+        "201":
+          description: Account created
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/AccountResponse"
+    get:
+      summary: Find accounts by owner
+      parameters:
+        - name: owner
+          in: query
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Accounts for owner
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/AccountResponse"
+
+  /accounts/{id}/balance:
+    get:
+      summary: Get account balance
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: integer
+      responses:
+        "200":
+          description: Balance retrieved
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/BalanceResponse"
+
+  /deposit:
+    post:
+      summary: Deposit money into an account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransferRequest"
+      responses:
+        "200":
+          description: Deposit successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TxResponse"
+
+  /withdraw:
+    post:
+      summary: Withdraw money from an account
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransferRequest"
+      responses:
+        "200":
+          description: Withdrawal successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TxResponse"
+
+  /transfer:
+    post:
+      summary: Transfer between two accounts
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: "#/components/schemas/TransferBetweenRequest"
+      responses:
+        "200":
+          description: Transfer successful
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/TxResponse"
+
+  /transactions:
+    get:
+      summary: List all transactions
+      responses:
+        "200":
+          description: Transactions list
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: "#/components/schemas/Transaction"
+
+  /report:
+    get:
+      summary: Generate report
+      responses:
+        "200":
+          description: Report generated
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Report"
+
+components:
+  schemas:
+    CreateAccountRequest:
+      type: object
+      properties:
+        owner:
+          type: string
+        initial_balance:
+          type: integer
+          format: int64
+    AccountResponse:
+      type: object
+      properties:
+        id:
+          type: integer
+        owner:
+          type: string
+        balance:
+          type: integer
+          format: int64
+    BalanceResponse:
+      type: object
+      properties:
+        balance:
+          type: integer
+          format: int64
+    TransferRequest:
+      type: object
+      properties:
+        id:
+          type: integer
+        amount:
+          type: integer
+          format: int64
+        description:
+          type: string
+    TransferBetweenRequest:
+      type: object
+      properties:
+        from:
+          type: integer
+        to:
+          type: integer
+        amount:
+          type: integer
+          format: int64
+        description:
+          type: string
+    TxResponse:
+      type: object
+      properties:
+        tx_id:
+          type: integer
+          format: int64
+    Transaction:
+      type: object
+      properties:
+        id:
+          type: integer
+        description:
+          type: string
+        timestamp:
+          type: string
+          format: date-time
+    Report:
+      type: object
+      properties:
+        summary:
+          type: string
+        total_transactions:
+          type: integer
