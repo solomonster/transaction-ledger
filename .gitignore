@@ -1,0 +1,44 @@
+/target
+**/*.rs.bk
+Cargo.lock
+# IDE settings
+.vscode/
+.idea/
+*.iml
+# Windows
+Thumbs.db
+
+# ------------------------
+# OS junk
+# ------------------------
+.DS_Store
+Thumbs.db
+
+# ------------------------
+# Logs & runtime files
+# ------------------------
+*.log
+*.pid
+*.seed
+
+# ------------------------
+# Docker
+# ------------------------
+docker-compose.override.yml
+
+# ------------------------
+# API / Tools
+# ------------------------
+*.postman_collection.json
+*.postman_environment.json
+
+# ------------------------
+# Project-specific
+# ------------------------
+*.pptx
+
+# ------------------------
+# Environment files
+# ------------------------
+.env
+.env.*
