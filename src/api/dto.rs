@@ -20,6 +20,12 @@ pub struct CreateAccountRequest {
 #[derive(Debug, Serialize)]
 pub struct CreateAccountResponse {
     pub id: u32,
+    #[serde(rename = "bankName")]
+    pub bank_name: String,
+    #[serde(rename = "bankCode")]
+    pub bank_code: String,
+    #[serde(rename = "accountNumber")]
+    pub account_number: String,
     pub currency: Currency,
 }
 
