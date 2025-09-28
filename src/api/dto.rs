@@ -1,5 +1,7 @@
 use serde::{Deserialize, Serialize};
 
+use crate::domain::currency::Currency;
+
 /// Kobo type alias (₦1 = 100 Kobo)
 pub type Kobo = i64;
 
@@ -8,11 +10,13 @@ pub type Kobo = i64;
 pub struct CreateAccountRequest {
     pub owner: String,
     pub initial: Kobo,
+    pub currency: Currency,
 }
 
 #[derive(Debug, Serialize)]
 pub struct CreateAccountResponse {
     pub id: u32,
+    pub currency: Currency,
 }
 
 /// --- Deposit / Withdraw DTO ---
