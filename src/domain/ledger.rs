@@ -28,6 +28,9 @@ impl Ledger {
             balance:0,
             closed: false,
             currency: Currency::NGN,
+            bank_name:"CBN".to_string(),
+            bank_code:"000".to_string(),
+            account_number:"00000000000".to_string(),
         };
         accounts.insert(0, bank);
         Ledger { 
@@ -39,7 +42,14 @@ impl Ledger {
         }
     }
 
-    pub fn create_account(&mut self, owner: String, initial_balance: Kobo, currency: Currency)-> Result<u32,String> {
+    pub fn create_account(
+        &mut self,
+        owner: String,
+        initial_balance: Kobo, 
+        currency: Currency,
+        bank_name: String,
+        bank_code: String,
+    )-> Result<u32,String> {
         let id =  self.next_account_id;
         let account = Account {
             id,
@@ -47,6 +57,9 @@ impl Ledger {
             balance: initial_balance,
             closed: false,
             currency,
+            bank_name,
+            bank_code,
+            account_number,
         };
         self.accounts.insert(id, account);
         self.next_account_id = self
