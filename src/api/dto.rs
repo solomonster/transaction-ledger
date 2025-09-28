@@ -11,6 +11,10 @@ pub struct CreateAccountRequest {
     pub owner: String,
     pub initial: Kobo,
     pub currency: Currency,
+     #[serde(rename = "bankName")]
+    pub bank_name: String,
+    #[serde(rename = "bankCode")]
+    pub bank_code: String,
 }
 
 #[derive(Debug, Serialize)]
