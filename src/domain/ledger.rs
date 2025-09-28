@@ -27,6 +27,7 @@ impl Ledger {
             owner: "BANK".to_string(),
             balance:0,
             closed: false,
+            currency: Currency::NGN,
         };
         accounts.insert(0, bank);
         Ledger { 
