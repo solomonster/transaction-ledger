@@ -9,4 +9,13 @@ pub struct Account {
     pub balance: Kobo,
     pub closed: bool,
     pub currency: Currency,
+
+    #[serde(rename = "bankName", default)]
+    pub bank_name: String,
+
+    #[serde(rename = "bankCode", default)]
+    pub bank_code: String,
+
+    #[serde(rename = "accountNumber", default)]
+    pub account_number: String,
 }
