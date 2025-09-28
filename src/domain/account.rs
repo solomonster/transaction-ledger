@@ -1,3 +1,5 @@
+use crate::domain::currency::Currency;
+
 pub type Kobo = i64;
 
 #[derive(Debug, Clone,serde::Serialize,serde::Deserialize)]
@@ -6,4 +8,5 @@ pub struct Account {
     pub owner: String,
     pub balance: Kobo,
     pub closed: bool,
+    pub currency: Currency,
 }
