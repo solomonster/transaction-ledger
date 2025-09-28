@@ -3,6 +3,7 @@ use crate::domain::{account::Kobo, currency::{self, Currency}};
 use super::{account::Account, transaction::{Transaction, TransactionEntry}};
 use std::collections::HashMap;
 use serde::{Serialize,Deserialize};
+use rand::{thread_rng, Rng};
 use tokio::fs;
 
 /// Small utility to format kobo -> ₦x.yy
@@ -51,6 +52,11 @@ impl Ledger {
         bank_code: String,
     )-> Result<u32,String> {
         let id =  self.next_account_id;
+        // Generate account number: <bank_code><6-digit random>
+        let mut rng = thread_rng();
+        let random_number: u32 = rng.gen_range(100_000..1_000_000); // 6 digits
+        let account_number = format!("{}{}", bank_code, random_number);
+
         let account = Account {
             id,
             owner,
