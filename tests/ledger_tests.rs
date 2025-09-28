@@ -1,12 +1,13 @@
+use transaction_ledger::domain::currency::Currency;
 use transaction_ledger::domain::ledger::{Ledger};
 use transaction_ledger::domain::account::Kobo;
 
  #[test]
     fn test_deposit_increases_balance() {
         let mut ledger = Ledger::new();
-
+        let currency = Currency::NGN;
         // Create an account for Alice with balance 0
-        let alice_id = ledger.create_account("Alice".to_string(), 0).unwrap();
+        let alice_id = ledger.create_account("Alice".to_string(), 0,currency).unwrap();
 
         // Deposit 1000 into Alice's account
         let tx_id = ledger.deposit(alice_id, 1000, Some("First deposit".to_string())).unwrap();
@@ -26,7 +27,8 @@ use transaction_ledger::domain::account::Kobo;
     #[test]
     fn test_withdraw_reduces_balance() {
         let mut ledger = Ledger::new();
-        let bob_id = ledger.create_account("Bob".to_string(), 2000).unwrap();
+        let currency = Currency::NGN;
+        let bob_id = ledger.create_account("Bob".to_string(), 2000,currency).unwrap();
 
         // Withdraw 500
         ledger.withdraw(bob_id, 500, Some("ATM withdrawal".to_string())).unwrap();
@@ -38,8 +40,9 @@ use transaction_ledger::domain::account::Kobo;
     #[test]
     fn test_transfer_between_accounts() {
         let mut ledger = Ledger::new();
-        let alice_id = ledger.create_account("Alice".to_string(), 1000).unwrap();
-        let bob_id = ledger.create_account("Bob".to_string(), 500).unwrap();
+        let currency = Currency::NGN;
+        let alice_id = ledger.create_account("Alice".to_string(), 1000,currency.clone()).unwrap();
+        let bob_id = ledger.create_account("Bob".to_string(), 500,currency).unwrap();
 
         // Transfer 300 from Alice to Bob
         ledger.transfer(alice_id, bob_id, 300, Some("Payback".to_string())).unwrap();
