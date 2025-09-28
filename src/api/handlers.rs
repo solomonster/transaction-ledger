@@ -23,13 +23,15 @@ pub async fn create_account_handler(
         payload.bank_name.clone(), 
         payload.bank_code.clone()
     ) {
-        Ok(id) => Ok(Json(CreateAccountResponse { 
+        Ok(id) =>{ 
+            let account = ledger.accounts.get(&id).unwrap();
+            Ok(Json(CreateAccountResponse { 
             id,
             bank_name: account.bank_name.clone(),
             bank_code: account.bank_code.clone(),
             account_number: account.account_number.clone(),
-            currency: payload.currency.clone(),  
-        })),
+            currency: account.currency.clone(),  
+        }))},
         Err(_) => Err(StatusCode::BAD_REQUEST),
     } 
 }
