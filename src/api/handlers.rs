@@ -16,10 +16,19 @@ pub async fn create_account_handler(
     Json(payload): Json<CreateAccountRequest>,
 )-> Result<Json<CreateAccountResponse>,StatusCode> {
     let mut ledger = state.ledger.write().await;
-    match ledger.create_account(payload.owner, payload.initial,payload.currency.clone()) {
+    match ledger.create_account(
+        payload.owner, 
+        payload.initial,
+        payload.currency.clone(), 
+        payload.bank_name.clone(), 
+        payload.bank_code.clone()
+    ) {
         Ok(id) => Ok(Json(CreateAccountResponse { 
             id,
-            currency: payload.currency,  
+            bank_name: account.bank_name.clone(),
+            bank_code: account.bank_code.clone(),
+            account_number: account.account_number.clone(),
+            currency: payload.currency.clone(),  
         })),
         Err(_) => Err(StatusCode::BAD_REQUEST),
     } 
