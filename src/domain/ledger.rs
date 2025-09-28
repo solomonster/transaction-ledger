@@ -1,4 +1,4 @@
-use crate::domain::account::Kobo;
+use crate::domain::{account::Kobo, currency::{self, Currency}};
 
 use super::{account::Account, transaction::{Transaction, TransactionEntry}};
 use std::collections::HashMap;
@@ -38,13 +38,14 @@ impl Ledger {
         }
     }
 
-    pub fn create_account(&mut self, owner: String, initial_balance: Kobo)-> Result<u32,String> {
+    pub fn create_account(&mut self, owner: String, initial_balance: Kobo, currency: Currency)-> Result<u32,String> {
         let id =  self.next_account_id;
         let account = Account {
             id,
             owner,
             balance: initial_balance,
             closed: false,
+            currency,
         };
         self.accounts.insert(id, account);
         self.next_account_id = self
