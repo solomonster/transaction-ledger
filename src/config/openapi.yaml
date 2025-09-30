@@ -2,7 +2,9 @@ openapi: 3.0.3
 info:
   title: Transaction Ledger API
   version: 1.0.0
-  description: API for managing accounts, transactions, and reports in the transaction-ledger system.
+  description: |
+    A transaction ledger service for accounts, deposits, withdrawals, transfers, and reporting.
+    Built with Rust (Axum), Kafka, and Tokio.
 
 servers:
   - url: http://localhost:3000
@@ -18,50 +20,53 @@ paths:
             schema:
               $ref: "#/components/schemas/CreateAccountRequest"
       responses:
-        "201":
+        "200":
           description: Account created
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/AccountResponse"
+                $ref: "#/components/schemas/CreateAccountResponse"
     get:
       summary: Find accounts by owner
       parameters:
-        - name: owner
-          in: query
-          required: true
+        - in: query
+          name: owner
           schema:
             type: string
       responses:
         "200":
-          description: Accounts for owner
+          description: List of accounts
           content:
             application/json:
               schema:
                 type: array
                 items:
-                  $ref: "#/components/schemas/AccountResponse"
+                  $ref: "#/components/schemas/Account"
 
   /accounts/{id}/balance:
     get:
       summary: Get account balance
       parameters:
-        - name: id
-          in: path
+        - in: path
+          name: id
           required: true
           schema:
             type: integer
       responses:
         "200":
-          description: Balance retrieved
+          description: Account balance
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/BalanceResponse"
+                type: object
+                properties:
+                  balance:
+                    type: number
+                    format: int64
 
   /deposit:
     post:
-      summary: Deposit money into an account
+      summary: Deposit funds into an account
       requestBody:
         required: true
         content:
@@ -70,7 +75,7 @@ paths:
               $ref: "#/components/schemas/TransferRequest"
       responses:
         "200":
-          description: Deposit successful
+          description: Transaction ID
           content:
             application/json:
               schema:
@@ -78,7 +83,7 @@ paths:
 
   /withdraw:
     post:
-      summary: Withdraw money from an account
+      summary: Withdraw funds from an account
       requestBody:
         required: true
         content:
@@ -87,7 +92,7 @@ paths:
               $ref: "#/components/schemas/TransferRequest"
       responses:
         "200":
-          description: Withdrawal successful
+          description: Transaction ID
           content:
             application/json:
               schema:
@@ -95,7 +100,7 @@ paths:
 
   /transfer:
     post:
-      summary: Transfer between two accounts
+      summary: Transfer funds between accounts
       requestBody:
         required: true
         content:
@@ -104,7 +109,7 @@ paths:
               $ref: "#/components/schemas/TransferBetweenRequest"
       responses:
         "200":
-          description: Transfer successful
+          description: Transaction ID
           content:
             application/json:
               schema:
@@ -112,10 +117,10 @@ paths:
 
   /transactions:
     get:
-      summary: List all transactions
+      summary: List transactions
       responses:
         "200":
-          description: Transactions list
+          description: List of transactions
           content:
             application/json:
               schema:
@@ -123,28 +128,71 @@ paths:
                 items:
                   $ref: "#/components/schemas/Transaction"
 
+  /save:
+    post:
+      summary: Save ledger to file
+      responses:
+        "200":
+          description: Ledger saved
+
+  /load:
+    post:
+      summary: Load ledger from file
+      responses:
+        "200":
+          description: Ledger loaded
+
   /report:
     get:
       summary: Generate report
       responses:
         "200":
-          description: Report generated
+          description: Ledger report
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/Report"
+                type: object
+                additionalProperties: true
 
 components:
   schemas:
+    Currency:
+      type: string
+      enum:
+        - NGN
+        - USD
+        - EUR
+        - GBP
+
     CreateAccountRequest:
       type: object
+      required: [owner, initial, currency, bankName, bankCode]
       properties:
         owner:
           type: string
-        initial_balance:
+        initial:
           type: integer
           format: int64
-    AccountResponse:
+          description: Initial deposit in Kobo (or cents).
+        currency:
+          $ref: "#/components/schemas/Currency"
+        bankName:
+          type: string
+        bankCode:
+          type: string
+
+    CreateAccountResponse:
+      type: object
+      required: [id, accountNumber, currency]
+      properties:
+        id:
+          type: integer
+        accountNumber:
+          type: string
+        currency:
+          $ref: "#/components/schemas/Currency"
+
+    Account:
       type: object
       properties:
         id:
@@ -154,14 +202,18 @@ components:
         balance:
           type: integer
           format: int64
-    BalanceResponse:
-      type: object
-      properties:
-        balance:
-          type: integer
-          format: int64
+        currency:
+          $ref: "#/components/schemas/Currency"
+        bankName:
+          type: string
+        bankCode:
+          type: string
+        accountNumber:
+          type: string
+
     TransferRequest:
       type: object
+      required: [id, amount]
       properties:
         id:
           type: integer
@@ -170,8 +222,11 @@ components:
           format: int64
         description:
           type: string
+          nullable: true
+
     TransferBetweenRequest:
       type: object
+      required: [from, to, amount]
       properties:
         from:
           type: integer
@@ -182,26 +237,31 @@ components:
           format: int64
         description:
           type: string
+          nullable: true
+
     TxResponse:
       type: object
       properties:
         tx_id:
           type: integer
-          format: int64
+
     Transaction:
       type: object
       properties:
         id:
           type: integer
+        from:
+          type: integer
+          nullable: true
+        to:
+          type: integer
+          nullable: true
+        amount:
+          type: integer
+          format: int64
         description:
           type: string
+          nullable: true
         timestamp:
           type: string
           format: date-time
-    Report:
-      type: object
-      properties:
-        summary:
-          type: string
-        total_transactions:
-          type: integer
