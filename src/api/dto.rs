@@ -17,7 +17,7 @@ pub struct CreateAccountRequest {
     pub bank_code: String,
 }
 
-#[derive(Debug, Serialize)]
+#[derive(Debug, Serialize,Deserialize)]
 pub struct CreateAccountResponse {
     pub id: u32,
     #[serde(rename = "bankName")]
