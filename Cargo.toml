@@ -4,11 +4,12 @@ version = "0.1.0"
 edition = "2024"
 authors = ["Ismail Ibrahim <ismailsofteng95@gmail.com>"]
 description = "A transaction ledger service with account management, transactions, and reporting built using Axum."
-repository = "https://github.com/yourusername/transaction-ledger"
+repository = "https://github.com/solomonster/transaction-ledger"
 keywords = ["ledger", "banking", "axum", "transactions"]
 categories = ["web-programming", "finance"]
 
 [dependencies]
+http = "0.2.12"
 # Web framework & HTTP middleware (CORS, etc.) 
 axum = "0.7"
 axum-macros = "0.4"
@@ -35,9 +36,10 @@ tracing-subscriber = { version = "0.3", features = ["fmt", "env-filter"] }
 rdkafka = { version = "0.38.0", features = ["tokio", "cmake-build"] }
 rand = "0.9.2"
 
+hyper = "0.14"
+tower = { version = "0.4", features = ["util"] }
+
 [dev-dependencies]
-tokio = { version = "1.41", features = ["full"] }
-serde_json = "1.0"
 
 
 [profile.release]
