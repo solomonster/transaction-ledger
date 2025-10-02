@@ -4,7 +4,6 @@ use super::{account::Account, transaction::{Transaction, TransactionEntry}};
 use std::collections::HashMap;
 use serde::{Serialize,Deserialize};
 use rand::{rngs::OsRng, thread_rng, Rng};
-use tokio::fs;
 
 /// Small utility to format kobo -> ₦x.yy
 fn format_naira(k: Kobo) -> String {
